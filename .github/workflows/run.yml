@@ -1,0 +1,58 @@
+name: Run Commands
+
+on:
+  workflow_call:
+    inputs:
+      commands:
+        type: "string"
+        description: "A JSON array of package.json scripts, e.g. `['lint','test','types']`"
+        required: true
+
+    secrets:
+      BOT_APP_ID:
+        description: "The GitHub App ID for authenticating with the GitHub API"
+        required: true
+      BOT_PRIVATE_KEY:
+        description: "The GitHub App Private Key for authenticating with the GitHub API"
+        required: true
+
+jobs:
+  run:
+    if: github.repository_owner == 'magnidev'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        command: ${{ fromJson(inputs.commands) }}
+
+    steps:
+      - name: Generate a token
+        id: bot-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GITHUB_APP_ID }}
+          private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ steps.bot-token.outputs.token }}
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run ${{ matrix.command }}
+        run: pnpm run "${{env.COMMAND}}"
+        env:
+          COMMAND: ${{ matrix.command }}
