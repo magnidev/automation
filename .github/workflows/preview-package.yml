@@ -1,0 +1,55 @@
+name: "Preview Package"
+
+on:
+  workflow_call:
+    inputs:
+      package_directory:
+        type: string
+        required: true
+        description: "Directory of the package to preview"
+        default: "./packages/**"
+
+    secrets:
+      GITHUB_APP_ID:
+        required: true
+        description: "GitHub App ID for generating a token"
+      GITHUB_APP_PRIVATE_KEY:
+        required: true
+        description: "Private key for the GitHub App to generate a token"
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate a token
+        id: bot-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GITHUB_APP_ID }}
+          private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ steps.bot-token.outputs.token }}
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build the project
+        run: pnpm run build
+
+      - name: Publish Preview
+        run: pnpx pkg-pr-new publish '${{inputs.package_directory}}'
