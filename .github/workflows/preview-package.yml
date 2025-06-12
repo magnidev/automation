@@ -3,10 +3,10 @@ name: "Preview Package"
 on:
   workflow_call:
     inputs:
-      package_directory:
+      publish_directory:
         type: string
         required: true
-        description: "Directory of the package to preview"
+        description: "The directory to publish to pkg.pr.new"
         default: "./packages/**"
 
     secrets:
@@ -52,4 +52,4 @@ jobs:
         run: pnpm run build
 
       - name: Publish Preview
-        run: pnpx pkg-pr-new publish '${{inputs.package_directory}}'
+        run: pnpx pkg-pr-new publish '${{inputs.publish_directory}}'
