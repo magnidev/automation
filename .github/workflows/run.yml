@@ -30,6 +30,8 @@ jobs:
         id: bot-token
         uses: actions/create-github-app-token@v2
         with:
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
 
