@@ -30,10 +30,8 @@ jobs:
         id: bot-token
         uses: actions/create-github-app-token@v2
         with:
-          owner: ${{ github.repository_owner }}
-          repositories: ${{ github.repository }}
-          app-id: ${{ secrets.GITHUB_APP_ID }}
-          private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,7 +45,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "22.x"
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org/"
 
