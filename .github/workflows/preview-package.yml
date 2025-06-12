@@ -4,18 +4,18 @@ on:
   workflow_call:
     inputs:
       publish_directory:
+        description: "The directory to publish to pkg.pr.new"
         type: string
         required: true
-        description: "The directory to publish to pkg.pr.new"
         default: "./packages/**"
 
     secrets:
-      GITHUB_APP_ID:
+      BOT_APP_ID:
+        description: "The GitHub App ID for authenticating with the GitHub API"
         required: true
-        description: "GitHub App ID for generating a token"
-      GITHUB_APP_PRIVATE_KEY:
+      BOT_PRIVATE_KEY:
+        description: "The GitHub App Private Key for authenticating with the GitHub API"
         required: true
-        description: "Private key for the GitHub App to generate a token"
 
 jobs:
   preview:
