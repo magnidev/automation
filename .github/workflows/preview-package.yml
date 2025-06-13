@@ -18,8 +18,9 @@ on:
         required: true
 
 jobs:
-  preview:
+  preview-package:
     if: github.repository_owner == 'magnidev'
+    name: Publish a Package Preview
     runs-on: ubuntu-latest
 
     steps:

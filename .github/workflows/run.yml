@@ -19,6 +19,7 @@ on:
 jobs:
   run:
     if: github.repository_owner == 'magnidev'
+    name: Run Commands
     runs-on: ubuntu-latest
 
     strategy:
