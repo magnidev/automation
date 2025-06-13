@@ -18,6 +18,7 @@ on:
 
 jobs:
   auto-assign:
+    if: github.repository_owner == 'magnidev'
     name: Auto Assign
     runs-on: ubuntu-latest
 
