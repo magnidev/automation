@@ -7,6 +7,10 @@ on:
         type: "string"
         description: "A JSON array of package.json scripts, e.g. `['lint','test','types']`"
         required: true
+      registry_url:
+        type: "string"
+        description: "The registry URL to use for package installation"
+        default: "https://registry.npmjs.org/"
 
     secrets:
       BOT_APP_ID:
@@ -50,10 +54,10 @@ jobs:
         with:
           node-version: "22.x"
           cache: "pnpm"
-          registry-url: "https://registry.npmjs.org/"
+          registry-url: ${{ inputs.registry_url}}
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run ${{ matrix.command }}
         run: pnpm run "${{env.COMMAND}}"
